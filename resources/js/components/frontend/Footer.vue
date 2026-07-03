@@ -1,6 +1,5 @@
 <template>
-
-<footer class="bg-blue-800 text-white text-center py-4 mt-6">
-      &copy; 2025 MySite. All rights reserved.
-    </footer>
+  <footer class="bg-blue-800 text-white text-center py-4 mt-auto">
+    &copy; 2026 FutureBridge Foundation. All rights reserved.
+  </footer>
 </template>
