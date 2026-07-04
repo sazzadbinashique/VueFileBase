@@ -8,7 +8,10 @@ use Illuminate\Support\Str;
 class Project extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'description', 'goal_amount', 'collected_amount',
+        'title', 'title_bn', 'slug', 'icon', 'color',
+        'description', 'short_en', 'short_bn',
+        'body_en', 'body_bn', 'impact_en', 'impact_bn',
+        'goal_amount', 'collected_amount',
         'status', 'featured_image', 'start_date', 'end_date',
     ];
 
@@ -19,6 +22,10 @@ class Project extends Model
             'collected_amount' => 'decimal:2',
             'start_date' => 'date',
             'end_date' => 'date',
+            'body_en' => 'array',
+            'body_bn' => 'array',
+            'impact_en' => 'array',
+            'impact_bn' => 'array',
         ];
     }
 
@@ -34,6 +41,16 @@ class Project extends Model
     public function donations()
     {
         return $this->hasMany(Donation::class);
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
+
+    public function galleryImages()
+    {
+        return $this->hasMany(GalleryImage::class);
     }
 
     public function scopeActive($query)

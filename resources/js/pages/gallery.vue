@@ -1,37 +1,98 @@
 <template>
   <Layout>
-    <div class="max-w-6xl mx-auto p-6">
-      <h1 class="text-3xl font-bold mb-6">Gallery</h1>
-      <div v-if="loading" class="text-center py-12">Loading gallery...</div>
-      <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div v-for="image in images" :key="image.id" class="group relative overflow-hidden rounded-lg shadow cursor-pointer" @click="lightboxImage = image">
-          <img :src="image.image_path" :alt="image.title" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300" />
-          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-end p-3">
-            <p class="text-white font-medium opacity-0 group-hover:opacity-100 transition">{{ image.title }}</p>
-          </div>
-        </div>
+    <section class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--accent2)' }">{{ lang.t('Moments from the field', 'মাঠের মুহূর্তগুলো') }}</p>
+      <h1 class="font-display text-4xl font-semibold mb-4">{{ lang.t('Gallery', 'গ্যালারি') }}</h1>
+      <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
+        {{ lang.t('Click any photo for a closer look. Filter by project to see specific work.', 'বড় করে দেখতে যেকোনো ছবিতে ক্লিক করুন। নির্দিষ্ট কাজ দেখতে প্রকল্প অনুযায়ী ফিল্টার করুন।') }}
+      </p>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-5 md:px-8 pb-8 flex flex-wrap justify-center gap-2">
+      <button v-for="(chip, i) in filters" :key="chip.id" type="button" @click="setFilter(chip.id)"
+        class="px-4 py-2 rounded-full border text-sm font-medium transition"
+        :style="activeFilter === chip.id
+          ? { background: 'var(--accent2)', color: 'var(--accent2-ink)', borderColor: 'var(--accent2)' }
+          : { borderColor: 'var(--border)', color: 'var(--ink)' }">
+        {{ lang.t(chip.en, chip.bn) }}
+      </button>
+    </div>
+
+    <div class="fb-divider"></div>
+
+    <section class="max-w-7xl mx-auto px-5 md:px-8 py-12">
+      <div v-if="loading" class="text-center py-12">
+        <div class="inline-block w-8 h-8 border-2 rounded-full animate-spin" :style="{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }"></div>
       </div>
-      <div v-if="!images.length && !loading" class="text-center py-12 text-gray-500">No images in the gallery yet.</div>
-    </div>
-    <div v-if="lightboxImage" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" @click="lightboxImage = null">
-      <img :src="lightboxImage.image_path" :alt="lightboxImage.title" class="max-w-full max-h-[90vh] rounded" />
-    </div>
+      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <button v-for="(img, i) in filteredImages" :key="img.id" type="button" @click="openLightbox(i)"
+          class="fb-card fb-reveal group relative block w-full rounded-xl overflow-hidden" v-reveal
+          :style="{ border: '1px solid var(--border)' }">
+          <img :src="img.image_path" :alt="lang.t(img.title, img.title_bn)"
+            class="w-full h-full object-cover aspect-square group-hover:scale-105 transition-transform duration-500">
+          <span class="absolute inset-x-0 bottom-0 p-2 text-xs bg-gradient-to-t from-black/70 to-transparent text-white text-left">
+            {{ lang.t(img.title, img.title_bn) }}
+          </span>
+        </button>
+      </div>
+      <div v-if="!filteredImages.length && !loading" class="text-center py-12" :style="{ color: 'var(--ink-soft)' }">
+        {{ lang.t('No images found.', 'কোনো ছবি পাওয়া যায়নি।') }}
+      </div>
+    </section>
   </Layout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import { useLangStore } from '@/stores/lang'
+import { useLightbox } from '@/composables/useLightbox'
 import Layout from '@/layouts/Layout.vue'
 
+const lang = useLangStore()
+const lb = useLightbox()
 const images = ref([])
+const projects = ref([])
 const loading = ref(true)
-const lightboxImage = ref(null)
+const activeFilter = ref('all')
+
+const vReveal = {
+  mounted(el) {
+    if (!('IntersectionObserver' in window)) { el.classList.add('is-visible'); return }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target) } })
+    }, { threshold: 0.12 })
+    io.observe(el)
+  }
+}
+
+const filters = computed(() => {
+  const all = { id: 'all', en: 'All', bn: 'সব' }
+  const projFilters = projects.value.map(p => ({ id: p.id + '', en: p.title, bn: p.title_bn || p.title }))
+  return [all, ...projFilters]
+})
+
+const filteredImages = computed(() => {
+  if (activeFilter.value === 'all') return images.value
+  return images.value.filter(img => img.project_id === parseInt(activeFilter.value) || img.project_id === activeFilter.value)
+})
+
+function setFilter(id) {
+  activeFilter.value = id
+}
+
+function openLightbox(index) {
+  lb.open(filteredImages.value, index)
+}
 
 onMounted(async () => {
   try {
-    const { data } = await axios.get('/api/gallery')
-    images.value = data.data || []
+    const [imgRes, projRes] = await Promise.all([
+      axios.get('/api/gallery', { params: { per_page: 100 } }),
+      axios.get('/api/projects', { params: { status: 'active', per_page: 100 } })
+    ])
+    images.value = imgRes.data.data || []
+    projects.value = projRes.data.data || []
   } finally { loading.value = false }
 })
 </script>

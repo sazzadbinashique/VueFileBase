@@ -8,7 +8,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::query()
+        $projects = Project::withCount('donations')
             ->when(request('status'), fn($q, $s) => $q->where('status', $s))
             ->orderBy('created_at', 'desc')
             ->paginate(12);
@@ -18,7 +18,9 @@ class ProjectController extends Controller
 
     public function show($slug)
     {
-        $project = Project::where('slug', $slug)->firstOrFail();
+        $project = Project::with(['videos' => fn($q) => $q->active()->orderBy('sort_order'), 'galleryImages' => fn($q) => $q->active()->orderBy('sort_order')])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         return response()->json($project);
     }

@@ -8,7 +8,9 @@ class Donation extends Model
 {
     protected $fillable = [
         'user_id', 'project_id', 'amount', 'currency', 'transaction_id',
-        'payment_method', 'status', 'donor_name', 'donor_email', 'message',
+        'bank_tran_id', 'card_type', 'card_no', 'card_issuer', 'card_brand',
+        'card_issuer_country', 'currency_amount', 'currency_type', 'tran_date',
+        'val_id', 'payment_method', 'status', 'donor_name', 'donor_email', 'message',
     ];
 
     protected function casts(): array
@@ -29,5 +31,10 @@ class Donation extends Model
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
     }
 }

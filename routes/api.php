@@ -7,6 +7,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\CmsPageController;
+use App\Http\Controllers\SSLCommerzController;
 use App\Http\Controllers\Admin;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -22,8 +23,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/donations', [DonationController::class, 'index']);
-    Route::post('/donations', [DonationController::class, 'store']);
+    Route::post('/donations/initiate', [DonationController::class, 'initiate']);
     Route::get('/donations/stats', [DonationController::class, 'stats']);
+    Route::get('/donations/yearly-stats', [DonationController::class, 'yearlyStats']);
+});
+
+Route::prefix('sslcommerz')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])->group(function () {
+    Route::post('/success', [SSLCommerzController::class, 'success']);
+    Route::post('/cancel', [SSLCommerzController::class, 'cancel']);
+    Route::post('/fail', [SSLCommerzController::class, 'fail']);
+    Route::post('/ipn', [SSLCommerzController::class, 'ipn']);
 });
 
 Route::prefix('admin')->group(function () {
@@ -53,6 +62,16 @@ Route::prefix('admin')->group(function () {
         Route::delete('cms-pages/{id}', [Admin\CmsPageController::class, 'destroy']);
 
         Route::get('users', [Admin\UserController::class, 'index']);
+        Route::post('users', [Admin\UserController::class, 'store']);
         Route::get('users/{id}', [Admin\UserController::class, 'show']);
+        Route::put('users/{id}', [Admin\UserController::class, 'update']);
+        Route::delete('users/{id}', [Admin\UserController::class, 'destroy']);
+
+        Route::get('roles', [Admin\RoleController::class, 'index']);
+        Route::post('roles', [Admin\RoleController::class, 'store']);
+        Route::get('roles/permissions', [Admin\RoleController::class, 'permissions']);
+        Route::get('roles/{role}', [Admin\RoleController::class, 'show']);
+        Route::put('roles/{role}', [Admin\RoleController::class, 'update']);
+        Route::delete('roles/{role}', [Admin\RoleController::class, 'destroy']);
     });
 });

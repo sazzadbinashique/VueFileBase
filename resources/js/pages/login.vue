@@ -1,16 +1,32 @@
 <template>
   <Layout>
-    <div class="min-h-[80vh] flex items-center justify-center p-6">
-      <div class="w-full max-w-md bg-white rounded-lg shadow p-8">
-        <h2 class="text-2xl font-bold text-center mb-6">Sign In</h2>
+    <div class="min-h-[60vh] flex items-center justify-center p-6">
+      <div class="w-full max-w-md rounded-xl p-8" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
+        <h1 class="text-2xl font-bold text-center mb-1" :style="{ color: 'var(--ink)' }">{{ lang.t('Sign In', 'সাইন ইন') }}</h1>
+        <p class="text-sm text-center mb-6" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('Welcome back!', 'ফিরে আসায় স্বাগতম!') }}</p>
         <form @submit.prevent="handleLogin" class="space-y-4">
-          <div><label class="block text-sm font-medium text-gray-700">Email</label><input v-model="form.email" type="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required /></div>
-          <div><label class="block text-sm font-medium text-gray-700">Password</label><input v-model="form.password" type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required /></div>
-          <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
-          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Sign In</button>
+          <div>
+            <label class="block text-sm font-medium mb-1" :style="{ color: 'var(--ink)' }">Email</label>
+            <input v-model="form.email" type="email" class="w-full border rounded px-3 py-2 outline-none"
+              :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" :style="{ color: 'var(--ink)' }">Password</label>
+            <input v-model="form.password" type="password" class="w-full border rounded px-3 py-2 outline-none"
+              :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" required />
+          </div>
+          <p v-if="error" class="text-sm" style="color: var(--accent2)">{{ error }}</p>
+          <button type="submit" :disabled="loading"
+            class="w-full py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
+            :style="{ background: 'var(--primary)', color: 'var(--primary-ink)' }">
+            {{ loading ? lang.t('Signing in...', 'সাইন ইন...') : lang.t('Sign In', 'সাইন ইন') }}
+          </button>
         </form>
-        <p class="text-center text-sm text-gray-600 mt-4">Don't have an account? <RouterLink to="/register" class="text-blue-600 hover:underline">Register</RouterLink></p>
-        <div class="text-center mt-2"><RouterLink to="/admin/login" class="text-sm text-gray-500 hover:underline">Admin Login</RouterLink></div>
+        <p class="text-center text-sm mt-4" :style="{ color: 'var(--ink-soft)' }">
+          {{ lang.t("Don't have an account?", 'একাউন্ট নেই?') }}
+          <RouterLink to="/register" class="font-semibold hover:underline" :style="{ color: 'var(--primary)' }">{{ lang.t('Register', 'নিবন্ধন') }}</RouterLink>
+        </p>
+        <RouterLink to="/admin/login" class="block text-center text-xs mt-2 hover:underline" :style="{ color: 'var(--ink-soft)' }">Admin Login</RouterLink>
       </div>
     </div>
   </Layout>
@@ -18,20 +34,27 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useLangStore } from '@/stores/lang'
 import Layout from '@/layouts/Layout.vue'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
+const lang = useLangStore()
 const error = ref(null)
+const loading = ref(false)
 const form = reactive({ email: '', password: '' })
 
 async function handleLogin() {
   error.value = null
+  loading.value = true
   try {
     await auth.login(form.email, form.password)
-    router.push('/dashboard')
+    const redirect = route.query.redirect || '/dashboard'
+    router.push(redirect)
   } catch (err) { error.value = err.response?.data?.message || 'Login failed' }
+  finally { loading.value = false }
 }
 </script>

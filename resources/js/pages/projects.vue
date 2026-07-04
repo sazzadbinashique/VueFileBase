@@ -1,50 +1,70 @@
 <template>
   <Layout>
-    <div class="max-w-6xl mx-auto p-6">
-      <h1 class="text-3xl font-bold mb-6">Our Projects</h1>
-      <div v-if="loading" class="text-center py-12">Loading projects...</div>
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div v-for="project in projects" :key="project.id" class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden">
-          <img :src="project.featured_image || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400'" :alt="project.title" class="w-full h-48 object-cover" />
-          <div class="p-4">
-            <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
-            <p class="text-gray-600 text-sm mb-4">{{ project.description?.substring(0, 150) }}...</p>
-            <div class="mb-2">
-              <div class="flex justify-between text-sm text-gray-600 mb-1"><span>Progress</span><span>{{ project.progress }}%</span></div>
-              <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-blue-600 rounded-full h-2" :style="{ width: project.progress + '%' }"></div></div>
-            </div>
-            <div class="flex justify-between text-sm text-gray-500 mb-3">
-              <span>${{ Number(project.collected_amount).toLocaleString() }} raised</span>
-              <span>Goal: ${{ Number(project.goal_amount).toLocaleString() }}</span>
-            </div>
-            <RouterLink :to="'/projects/' + project.slug" class="inline-block bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition">View & Donate</RouterLink>
-          </div>
-        </div>
-      </div>
-      <div v-if="meta && meta.last_page > 1" class="flex justify-center gap-2 mt-8">
-        <button v-for="page in meta.last_page" :key="page" @click="loadPage(page)" :class="['px-3 py-1 rounded', page === meta.current_page ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300']">{{ page }}</button>
-      </div>
+    <div class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--primary)' }">{{ lang.t('Where your support goes', 'আপনার সহায়তা যেখানে যায়') }}</p>
+      <h1 class="font-display text-4xl font-semibold mb-4">{{ lang.t('Our Projects', 'আমাদের প্রকল্পসমূহ') }}</h1>
+      <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
+        {{ lang.t('Every donation goes directly to program costs. Pick a cause that speaks to you.', 'প্রত্যেকটি অনুদান সরাসরি কর্মসূচির খরচে ব্যয় হয়। আপনার পছন্দের একটি কারণ বেছে নিন।') }}
+      </p>
     </div>
+
+    <div class="fb-divider fb-divider--accent"></div>
+
+    <section class="max-w-7xl mx-auto px-5 md:px-8 py-12">
+      <div v-if="loading" class="text-center py-12">
+        <div class="inline-block w-8 h-8 border-2 rounded-full animate-spin" :style="{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }"></div>
+      </div>
+      <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <RouterLink v-for="p in projects" :key="p.id" :to="'/projects/' + p.slug"
+          class="fb-card fb-reveal group block rounded-2xl overflow-hidden" v-reveal
+          :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
+          <div class="relative h-48 overflow-hidden">
+            <img :src="p.featured_image" :alt="lang.t(p.title, p.title_bn)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <span class="absolute top-3 left-3 font-mono text-[11px] uppercase tracking-wider px-2 py-1 rounded-full"
+              :style="{ background: 'var(--surface)/90', color: 'var(--ink)' }">{{ lang.t('Project', 'প্রকল্প') }}</span>
+          </div>
+          <div class="p-5">
+            <h3 class="font-display text-xl font-semibold mb-2">{{ lang.t(p.title, p.title_bn) }}</h3>
+            <p class="text-sm leading-relaxed mb-4" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(p.short_en, p.short_bn) }}</p>
+            <div class="flex gap-3 text-sm font-medium">
+              <span class="inline-flex items-center gap-1" :style="{ color: 'var(--primary)' }">
+                {{ lang.t('Read more', 'বিস্তারিত') }} <span aria-hidden="true">&rarr;</span>
+              </span>
+            </div>
+          </div>
+        </RouterLink>
+      </div>
+      <div v-if="!projects.length && !loading" class="text-center py-12" :style="{ color: 'var(--ink-soft)' }">
+        {{ lang.t('No projects available yet.', 'কোনো প্রকল্প এখনো উপলব্ধ নয়।') }}
+      </div>
+    </section>
   </Layout>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useLangStore } from '@/stores/lang'
 import Layout from '@/layouts/Layout.vue'
 
+const lang = useLangStore()
 const projects = ref([])
-const meta = ref(null)
 const loading = ref(true)
 
-async function loadPage(page = 1) {
-  loading.value = true
-  try {
-    const { data } = await axios.get('/api/projects', { params: { page } })
-    projects.value = data.data
-    meta.value = { current_page: data.current_page, last_page: data.last_page }
-  } finally { loading.value = false }
+const vReveal = {
+  mounted(el) {
+    if (!('IntersectionObserver' in window)) { el.classList.add('is-visible'); return }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target) } })
+    }, { threshold: 0.12 })
+    io.observe(el)
+  }
 }
 
-onMounted(() => loadPage())
+onMounted(async () => {
+  try {
+    const { data } = await axios.get('/api/projects', { params: { status: 'active', per_page: 100 } })
+    projects.value = data.data || []
+  } finally { loading.value = false }
+})
 </script>

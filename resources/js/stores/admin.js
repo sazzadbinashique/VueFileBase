@@ -6,11 +6,38 @@ export const useAdminStore = defineStore('admin', {
   actions: {
     async login(email, password) {
       const { data } = await axios.post('/api/admin/login', { email, password })
-      this.user = data.user
-      this.token = data.token
-      this.isLoggedIn = true
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
+      this.setAuth(data.user, data.token)
       return data
+    },
+
+    async init() {
+      const saved = localStorage.getItem('admin_token')
+      if (!saved) return
+      this.token = saved
+      this.isLoggedIn = true
+      axios.defaults.headers.common['Authorization'] = `Bearer ${saved}`
+      try {
+        const { data } = await axios.get('/api/user')
+        this.user = data
+      } catch {
+        this.clearAuth()
+      }
+    },
+
+    setAuth(user, token) {
+      this.user = user
+      this.token = token
+      this.isLoggedIn = true
+      localStorage.setItem('admin_token', token)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    },
+
+    clearAuth() {
+      this.user = null
+      this.token = null
+      this.isLoggedIn = false
+      localStorage.removeItem('admin_token')
+      delete axios.defaults.headers.common['Authorization']
     },
     async fetchDashboard() {
       const { data } = await axios.get('/api/admin/dashboard')
@@ -84,11 +111,38 @@ export const useAdminStore = defineStore('admin', {
       const { data } = await axios.get('/api/admin/users', { params })
       return data
     },
+    async storeUser(user) {
+      const { data } = await axios.post('/api/admin/users', user)
+      return data
+    },
+    async updateUser(id, user) {
+      const { data } = await axios.put(`/api/admin/users/${id}`, user)
+      return data
+    },
+    async deleteUser(id) {
+      await axios.delete(`/api/admin/users/${id}`)
+    },
+    async fetchRoles(params = {}) {
+      const { data } = await axios.get('/api/admin/roles', { params })
+      return data
+    },
+    async fetchPermissions() {
+      const { data } = await axios.get('/api/admin/roles/permissions')
+      return data
+    },
+    async storeRole(role) {
+      const { data } = await axios.post('/api/admin/roles', role)
+      return data
+    },
+    async updateRole(id, role) {
+      const { data } = await axios.put(`/api/admin/roles/${id}`, role)
+      return data
+    },
+    async deleteRole(id) {
+      await axios.delete(`/api/admin/roles/${id}`)
+    },
     logout() {
-      this.user = null
-      this.token = null
-      this.isLoggedIn = false
-      delete axios.defaults.headers.common['Authorization']
+      this.clearAuth()
     },
   },
 })

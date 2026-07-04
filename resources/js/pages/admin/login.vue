@@ -1,15 +1,27 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-      <h1 class="text-2xl font-bold text-center mb-2">Admin Login</h1>
-      <p class="text-gray-500 text-center mb-6">FutureBridge Foundation</p>
+  <div class="min-h-screen flex items-center justify-center p-6" :style="{ background: 'var(--bg)' }">
+    <div class="w-full max-w-md rounded-xl p-8" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
+      <h1 class="text-2xl font-bold text-center mb-1" :style="{ color: 'var(--ink)' }">Admin Login</h1>
+      <p class="text-sm text-center mb-6" :style="{ color: 'var(--ink-soft)' }">FutureBridge Foundation</p>
       <form @submit.prevent="handleLogin" class="space-y-4">
-        <div><label class="block text-sm font-medium text-gray-700">Email</label><input v-model="form.email" type="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required /></div>
-        <div><label class="block text-sm font-medium text-gray-700">Password</label><input v-model="form.password" type="password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required /></div>
-        <p v-if="error" class="text-red-600 text-sm">{{ error }}</p>
-        <button type="submit" class="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 transition" :disabled="loading">{{ loading ? 'Signing in...' : 'Sign In' }}</button>
+        <div>
+          <label class="block text-sm font-medium mb-1" :style="{ color: 'var(--ink)' }">Email</label>
+          <input v-model="form.email" type="email" class="w-full border rounded px-3 py-2 outline-none"
+            :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" :style="{ color: 'var(--ink)' }">Password</label>
+          <input v-model="form.password" type="password" class="w-full border rounded px-3 py-2 outline-none"
+            :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" required />
+        </div>
+        <p v-if="error" class="text-sm" style="color: var(--accent2)">{{ error }}</p>
+        <button type="submit" :disabled="loading"
+          class="w-full py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
+          :style="{ background: 'var(--primary)', color: 'var(--primary-ink)' }">
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
       </form>
-      <RouterLink to="/login" class="block text-center text-sm text-gray-500 mt-4 hover:underline">User Login</RouterLink>
+      <RouterLink to="/login" class="block text-center text-sm mt-4 hover:underline" :style="{ color: 'var(--ink-soft)' }">User Login</RouterLink>
     </div>
   </div>
 </template>

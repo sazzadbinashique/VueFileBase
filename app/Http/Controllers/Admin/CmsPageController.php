@@ -9,11 +9,27 @@ use Illuminate\Support\Str;
 
 class CmsPageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pages = CmsPage::orderBy('created_at', 'desc')->paginate(20);
+        $query = CmsPage::query();
 
-        return response()->json($pages);
+        if ($search = $request->search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $sortBy = $request->sort_by ?? 'created_at';
+        $sortDir = $request->sort_dir ?? 'desc';
+        $query->orderBy(in_array($sortBy, ['title', 'status', 'created_at']) ? $sortBy : 'created_at', $sortDir === 'asc' ? 'asc' : 'desc');
+
+        $perPage = min((int)($request->per_page ?? 15), 100);
+        return response()->json($query->paginate($perPage));
     }
 
     public function store(Request $request)
@@ -68,7 +84,6 @@ class CmsPageController extends Controller
     public function destroy($id)
     {
         CmsPage::findOrFail($id)->delete();
-
         return response()->json(['message' => 'Page deleted successfully']);
     }
 }

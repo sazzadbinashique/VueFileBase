@@ -41,8 +41,28 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Donation::class);
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function permissions(): \Illuminate\Support\Collection
+    {
+        return $this->roles->flatMap(fn($role) => $role->permissions)->unique('id');
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return $this->permissions()->contains('name', $permission);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles->contains('name', $role);
+    }
+
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->hasRole('admin');
     }
 }

@@ -1,20 +1,24 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <Header />
-    <Slider v-if="showSlider" />
+  <div class="min-h-screen flex flex-col" :style="{ background: 'var(--bg)', color: 'var(--ink)' }">
+    <Navbar />
     <main class="flex-1"><slot /></main>
-    <Footer />
+    <AppFooter />
+    <Lightbox />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import Header from '@/components/frontend/Header.vue'
-import Footer from '@/components/frontend/Footer.vue'
-import Slider from '@/components/frontend/Slider.vue'
+import { onMounted } from 'vue'
+import Navbar from '@/components/frontend/Navbar.vue'
+import AppFooter from '@/components/frontend/AppFooter.vue'
+import Lightbox from '@/components/shared/Lightbox.vue'
+import { useThemeStore } from '@/stores/theme'
+import { useLangStore } from '@/stores/lang'
+import { useAuthStore } from '@/stores/auth'
 
-const route = useRoute()
-const hideSlider = ['login', 'register', 'admin-login']
-const showSlider = computed(() => !hideSlider.includes(route.name))
+useThemeStore()
+useLangStore()
+const auth = useAuthStore()
+
+onMounted(() => auth.init())
 </script>

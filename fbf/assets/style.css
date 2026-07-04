@@ -1,0 +1,151 @@
+/* ==========================================================================
+   Future Bridge Foundation — Shared Styles
+   Design tokens: deep river-teal + marigold + vermillion, folk-art dividers
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Serif+Bengali:wght@500;700&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --bg: #F3F7F1;
+  --surface: #FFFFFF;
+  --surface-2: #EAF2E9;
+  --ink: #10302B;
+  --ink-soft: #43594F;
+  --primary: #0E6B5C;
+  --primary-ink: #F3F7F1;
+  --accent: #E8A93B;
+  --accent-ink: #10302B;
+  --accent2: #C43D3D;
+  --accent2-ink: #FBF6EC;
+  --border: rgba(16,48,43,0.12);
+  --shadow: 0 12px 30px -14px rgba(16,48,43,0.28);
+}
+
+html.dark{
+  --bg: #0A1F1B;
+  --surface: #10302B;
+  --surface-2: #123832;
+  --ink: #E9F3EF;
+  --ink-soft: #A9C4BC;
+  --primary: #4FBFA6;
+  --primary-ink: #06201A;
+  --accent: #F0BE5E;
+  --accent-ink: #10302B;
+  --accent2: #E5766B;
+  --accent2-ink: #2A0E0C;
+  --border: rgba(233,243,239,0.14);
+  --shadow: 0 12px 30px -14px rgba(0,0,0,0.55);
+}
+
+*{ scrollbar-color: var(--primary) transparent; }
+
+body{
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', 'Hind Siliguri', ui-sans-serif, system-ui, sans-serif;
+  transition: background-color .35s ease, color .35s ease;
+}
+
+.font-display{
+  font-family: 'Fraunces', 'Noto Serif Bengali', serif;
+  font-optical-sizing: auto;
+}
+.font-mono{
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .04em;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Signature element: rickshaw-art scalloped divider ---------- */
+.fb-divider{
+  width: 100%;
+  height: 22px;
+  background-repeat: repeat-x;
+  background-size: 44px 22px;
+  background-image:
+    radial-gradient(circle at 11px 0, transparent 11px, var(--primary) 11.5px, var(--primary) 12px, transparent 12.5px);
+  opacity: .9;
+}
+.fb-divider.flip{ transform: scaleY(-1); }
+.fb-divider--accent{
+  background-image:
+    radial-gradient(circle at 11px 0, transparent 11px, var(--accent) 11.5px, var(--accent) 12px, transparent 12.5px);
+}
+.fb-divider--accent2{
+  background-image:
+    radial-gradient(circle at 11px 0, transparent 11px, var(--accent2) 11.5px, var(--accent2) 12px, transparent 12.5px);
+}
+
+/* Ornamental corner-arch used on cards, echoing rickshaw hood panels */
+.fb-arch-top{
+  border-top-left-radius: 999px 60px;
+  border-top-right-radius: 999px 60px;
+}
+
+/* ---------- Reveal-on-scroll ---------- */
+.fb-reveal{
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.fb-reveal.is-visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Language visibility ---------- */
+[data-lang="bn"]{ display: none; }
+html[lang="bn"] [data-lang="bn"]{ display: revert; }
+html[lang="bn"] [data-lang="en"]{ display: none; }
+html[lang="bn"] .lang-inline[data-lang="bn"]{ display: inline; }
+html[lang="en"] .lang-inline[data-lang="en"]{ display: inline; }
+
+/* ---------- Card hover lift ---------- */
+.fb-card{
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.fb-card:hover{
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Nav underline ---------- */
+.fb-nav-link{ position: relative; }
+.fb-nav-link::after{
+  content:"";
+  position:absolute; left:0; right:100%; bottom:-4px; height:2px;
+  background: var(--accent);
+  transition: right .25s ease;
+}
+.fb-nav-link:hover::after, .fb-nav-link.active::after{ right:0; }
+
+/* ---------- Theme toggle knob ---------- */
+.fb-toggle-knob{ transition: transform .3s ease; }
+html.dark .fb-toggle-knob{ transform: translateX(20px); }
+
+/* ---------- Lightbox ---------- */
+#fb-lightbox{
+  position: fixed; inset:0; z-index: 100;
+  background: rgba(6,12,10,0.92);
+  display:none; align-items:center; justify-content:center;
+  padding: 2rem;
+}
+#fb-lightbox.open{ display:flex; }
+#fb-lightbox img{ max-height: 82vh; max-width: 90vw; border-radius: .5rem; box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6); }
+
+/* ---------- River-bridge hero motif tint ---------- */
+.fb-hero-sky{
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--bg) 100%);
+}
+
+::selection{ background: var(--accent); color: var(--accent-ink); }

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Video extends Model
 {
     protected $fillable = [
-        'title', 'description', 'url', 'thumbnail', 'project_id', 'sort_order', 'status',
+        'title', 'title_bn', 'description', 'description_bn',
+        'url', 'thumbnail', 'project_id', 'sort_order', 'status',
     ];
 
     protected function casts(): array

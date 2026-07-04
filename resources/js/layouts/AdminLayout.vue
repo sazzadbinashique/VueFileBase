@@ -1,35 +1,58 @@
 <template>
-  <div class="min-h-screen flex">
-    <aside class="w-64 bg-gray-900 text-white flex flex-col">
-      <div class="p-4 border-b border-gray-700">
-        <RouterLink to="/admin/dashboard" class="text-xl font-bold">FBF Admin</RouterLink>
-      </div>
-      <nav class="flex-1 p-4 space-y-1">
-        <RouterLink to="/admin/dashboard" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">Dashboard</RouterLink>
-        <RouterLink to="/admin/projects" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">Projects</RouterLink>
-        <RouterLink to="/admin/donations" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">Donations</RouterLink>
-        <RouterLink to="/admin/gallery" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">Gallery</RouterLink>
-        <RouterLink to="/admin/videos" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">Videos</RouterLink>
-        <RouterLink to="/admin/cms-pages" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">CMS Pages</RouterLink>
-        <RouterLink to="/admin/users" class="block px-3 py-2 rounded hover:bg-gray-700" active-class="bg-gray-700">Users</RouterLink>
-      </nav>
-      <div class="p-4 border-t border-gray-700">
-        <button @click="handleLogout" class="w-full text-left px-3 py-2 rounded hover:bg-gray-700">Logout</button>
-      </div>
-    </aside>
-    <main class="flex-1 bg-gray-100 p-6"><slot /></main>
+  <div v-if="ready" class="flex min-h-screen" :style="{ background: 'var(--bg)', color: 'var(--ink)' }">
+    <div
+      class="hidden md:block shrink-0 transition-all duration-300 ease-in-out"
+      :class="sidebarOpen ? 'min-w-[240px] max-w-[240px]' : 'min-w-[64px] max-w-[64px]'"
+    >
+      <AdminSidebar :collapsed="!sidebarOpen" @toggle="sidebarOpen = !sidebarOpen" />
+    </div>
+
+    <div
+      v-if="mobileSidebar"
+      class="fixed inset-0 z-40 md:hidden"
+      @click="mobileSidebar = false"
+    >
+      <div class="absolute inset-0" style="background: rgba(0,0,0,0.5)"></div>
+      <aside
+        class="absolute left-0 top-0 bottom-0 w-60"
+        :style="{ background: 'var(--surface)' }"
+        @click.stop
+      >
+        <AdminSidebar :collapsed="false" @toggle="mobileSidebar = false" />
+      </aside>
+    </div>
+
+    <div class="flex flex-col flex-1 min-w-0">
+      <AdminHeader @toggle="sidebarOpen = !sidebarOpen" />
+      <main class="flex-1 overflow-y-auto p-6">
+        <slot name="breadcrumb" />
+        <slot />
+      </main>
+    </div>
+  </div>
+  <div v-else class="min-h-screen flex items-center justify-center" :style="{ background: 'var(--bg)' }">
+    <span class="w-8 h-8 border-2 rounded-full animate-spin" :style="{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }"></span>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import AdminHeader from '@/components/admin/AdminHeader.vue'
+import AdminSidebar from '@/components/admin/AdminSidebar.vue'
+import { useThemeStore } from '@/stores/theme'
+import { useLangStore } from '@/stores/lang'
 import { useAdminStore } from '@/stores/admin'
-import { useRouter } from 'vue-router'
 
+useThemeStore()
+useLangStore()
 const admin = useAdminStore()
-const router = useRouter()
 
-function handleLogout() {
-  admin.logout()
-  router.push('/admin/login')
-}
+const sidebarOpen = ref(true)
+const mobileSidebar = ref(false)
+const ready = ref(false)
+
+onMounted(async () => {
+  await admin.init()
+  ready.value = true
+})
 </script>
