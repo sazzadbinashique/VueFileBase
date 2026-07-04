@@ -10,7 +10,7 @@ class Donation extends Model
         'user_id', 'project_id', 'amount', 'currency', 'transaction_id',
         'bank_tran_id', 'card_type', 'card_no', 'card_issuer', 'card_brand',
         'card_issuer_country', 'currency_amount', 'currency_type', 'tran_date',
-        'val_id', 'payment_method', 'status', 'donor_name', 'donor_email', 'message',
+        'val_id', 'stripe_session_id', 'payment_method', 'status', 'donor_name', 'donor_email', 'message',
     ];
 
     protected function casts(): array

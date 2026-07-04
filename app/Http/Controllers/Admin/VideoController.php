@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class VideoController extends Controller
 {
+    public function show($id)
+    {
+        return response()->json(Video::with('project')->findOrFail($id));
+    }
+
     public function index(Request $request)
     {
         $query = Video::with('project');

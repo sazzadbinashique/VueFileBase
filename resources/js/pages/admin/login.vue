@@ -21,7 +21,11 @@
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
       </form>
-      <RouterLink to="/login" class="block text-center text-sm mt-4 hover:underline" :style="{ color: 'var(--ink-soft)' }">User Login</RouterLink>
+      <div class="flex items-center justify-center gap-4 mt-4 text-sm">
+        <RouterLink to="/login" class="hover:underline" :style="{ color: 'var(--ink-soft)' }">User Login</RouterLink>
+        <span :style="{ color: 'var(--border)' }">|</span>
+        <RouterLink to="/register" class="hover:underline" :style="{ color: 'var(--primary)' }">Register</RouterLink>
+      </div>
     </div>
   </div>
 </template>

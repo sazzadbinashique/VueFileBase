@@ -1,14 +1,12 @@
 <template>
   <Layout>
     <div class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
-      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--primary)' }">{{ lang.t('Where your support goes', 'আপনার সহায়তা যেখানে যায়') }}</p>
-      <h1 class="font-display text-4xl font-semibold mb-4">{{ lang.t('Our Projects', 'আমাদের প্রকল্পসমূহ') }}</h1>
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--primary)' }">{{ $t('where_your_support_goes') }}</p>
+      <h1 class="font-display text-4xl font-semibold mb-4">{{ $t('our_projects') }}</h1>
       <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
-        {{ lang.t('Every donation goes directly to program costs. Pick a cause that speaks to you.', 'প্রত্যেকটি অনুদান সরাসরি কর্মসূচির খরচে ব্যয় হয়। আপনার পছন্দের একটি কারণ বেছে নিন।') }}
+        {{ $t('projects_desc') }}
       </p>
     </div>
-
-    <div class="fb-divider fb-divider--accent"></div>
 
     <section class="max-w-7xl mx-auto px-5 md:px-8 py-12">
       <div v-if="loading" class="text-center py-12">
@@ -19,23 +17,23 @@
           class="fb-card fb-reveal group block rounded-2xl overflow-hidden" v-reveal
           :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <div class="relative h-48 overflow-hidden">
-            <img :src="p.featured_image" :alt="lang.t(p.title, p.title_bn)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <img :src="p.featured_image" :alt="lang.f(p, 'title')" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
             <span class="absolute top-3 left-3 font-mono text-[11px] uppercase tracking-wider px-2 py-1 rounded-full"
-              :style="{ background: 'var(--surface)/90', color: 'var(--ink)' }">{{ lang.t('Project', 'প্রকল্প') }}</span>
+              :style="{ background: 'var(--surface)/90', color: 'var(--ink)' }">{{ $t('project') }}</span>
           </div>
           <div class="p-5">
-            <h3 class="font-display text-xl font-semibold mb-2">{{ lang.t(p.title, p.title_bn) }}</h3>
-            <p class="text-sm leading-relaxed mb-4" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(p.short_en, p.short_bn) }}</p>
+            <h3 class="font-display text-xl font-semibold mb-2">{{ lang.f(p, 'title') }}</h3>
+            <p class="text-sm leading-relaxed mb-4" :style="{ color: 'var(--ink-soft)' }">{{ lang.f(p, 'short') }}</p>
             <div class="flex gap-3 text-sm font-medium">
               <span class="inline-flex items-center gap-1" :style="{ color: 'var(--primary)' }">
-                {{ lang.t('Read more', 'বিস্তারিত') }} <span aria-hidden="true">&rarr;</span>
+                {{ $t('read_more') }} <span aria-hidden="true">&rarr;</span>
               </span>
             </div>
           </div>
         </RouterLink>
       </div>
       <div v-if="!projects.length && !loading" class="text-center py-12" :style="{ color: 'var(--ink-soft)' }">
-        {{ lang.t('No projects available yet.', 'কোনো প্রকল্প এখনো উপলব্ধ নয়।') }}
+        {{ $t('no_projects') }}
       </div>
     </section>
   </Layout>

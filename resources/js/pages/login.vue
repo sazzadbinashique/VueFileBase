@@ -2,8 +2,8 @@
   <Layout>
     <div class="min-h-[60vh] flex items-center justify-center p-6">
       <div class="w-full max-w-md rounded-xl p-8" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
-        <h1 class="text-2xl font-bold text-center mb-1" :style="{ color: 'var(--ink)' }">{{ lang.t('Sign In', 'সাইন ইন') }}</h1>
-        <p class="text-sm text-center mb-6" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('Welcome back!', 'ফিরে আসায় স্বাগতম!') }}</p>
+        <h1 class="text-2xl font-bold text-center mb-1" :style="{ color: 'var(--ink)' }">{{ $t('sign_in') }}</h1>
+        <p class="text-sm text-center mb-6" :style="{ color: 'var(--ink-soft)' }">{{ $t('welcome_back') }}</p>
         <form @submit.prevent="handleLogin" class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1" :style="{ color: 'var(--ink)' }">Email</label>
@@ -19,12 +19,12 @@
           <button type="submit" :disabled="loading"
             class="w-full py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
             :style="{ background: 'var(--primary)', color: 'var(--primary-ink)' }">
-            {{ loading ? lang.t('Signing in...', 'সাইন ইন...') : lang.t('Sign In', 'সাইন ইন') }}
+            {{ loading ? $t('signing_in') : $t('sign_in') }}
           </button>
         </form>
         <p class="text-center text-sm mt-4" :style="{ color: 'var(--ink-soft)' }">
-          {{ lang.t("Don't have an account?", 'একাউন্ট নেই?') }}
-          <RouterLink to="/register" class="font-semibold hover:underline" :style="{ color: 'var(--primary)' }">{{ lang.t('Register', 'নিবন্ধন') }}</RouterLink>
+          {{ $t('no_account') }}
+          <RouterLink to="/register" class="font-semibold hover:underline" :style="{ color: 'var(--primary)' }">{{ $t('register') }}</RouterLink>
         </p>
         <RouterLink to="/admin/login" class="block text-center text-xs mt-2 hover:underline" :style="{ color: 'var(--ink-soft)' }">Admin Login</RouterLink>
       </div>

@@ -25,7 +25,7 @@ class UserController extends Controller
             $query->whereHas('roles', fn($q) => $q->where('name', $request->role));
         }
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->boolean('status'));
         }
 

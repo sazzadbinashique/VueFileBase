@@ -33,7 +33,7 @@ const currentImage = computed(() => {
 const currentCaption = computed(() => {
   const item = lb.items.value[lb.index.value]
   if (!item) return ''
-  return lang.t(item.title || item.en || '', item.title_bn || item.bn || '')
+  return lang.t(item.title, item.title_bn)
 })
 
 function handleKey(e) {

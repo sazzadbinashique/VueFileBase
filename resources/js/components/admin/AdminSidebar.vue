@@ -7,17 +7,17 @@
     <div class="flex items-center justify-between px-3 h-14 shrink-0" :style="{ borderBottom: '1px solid var(--border)' }">
       <RouterLink to="/admin/dashboard" class="flex items-center gap-2 overflow-hidden">
         <span class="text-lg shrink-0" :style="{ color: 'var(--primary)' }">⚓</span>
-        <span v-show="!collapsed" class="font-display font-bold text-sm whitespace-nowrap">{{ lang.t('FBF Admin', 'এফবিএফ অ্যাডমিন') }}</span>
+        <span v-show="!collapsed" class="font-display font-bold text-sm whitespace-nowrap">{{ $t('fbf_admin') }}</span>
       </RouterLink>
-      <button @click="$emit('toggle')" class="text-lg hover:opacity-50 shrink-0 p-1 transition-opacity" :title="collapsed ? 'Expand' : 'Collapse'">
-        <span v-if="collapsed">&#9654;</span>
-        <span v-else>&#9664;</span>
+      <button @click="$emit('toggle')" class="hover:opacity-60 shrink-0 p-1.5 rounded transition-opacity" :title="collapsed ? 'Expand' : 'Collapse'" :style="{ color: 'var(--ink-soft)' }">
+        <svg v-if="collapsed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
     </div>
 
     <nav class="flex-1 overflow-y-auto py-3 space-y-4 px-2">
       <div v-for="group in navGroups" :key="group.label">
-        <p v-show="!collapsed" class="font-mono text-[10px] uppercase tracking-wider px-2 mb-1" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(group.label, group.labelBn) }}</p>
+          <p v-show="!collapsed" class="font-mono text-[10px] uppercase tracking-wider px-2 mb-1" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(group.label) }}</p>
         <RouterLink
           v-for="item in group.items"
           :key="item.to"
@@ -30,7 +30,7 @@
           }"
         >
           <span class="text-lg shrink-0 w-6 text-center">{{ item.icon }}</span>
-          <span v-show="!collapsed" class="truncate">{{ lang.t(item.en, item.bn) }}</span>
+          <span v-show="!collapsed" class="truncate">{{ $t(item.key) }}</span>
         </RouterLink>
       </div>
     </nav>
@@ -49,21 +49,23 @@ const route = useRoute()
 
 const navGroups = [
   {
-    label: 'Content', labelBn: 'কন্টেন্ট',
+    label: 'content',
     items: [
-      { to: '/admin/dashboard', icon: '\u2302', en: 'Dashboard', bn: '\u09A1\u09CD\u09AF\u09BE\u09B6\u09AC\u09CB\u09B0\u09CD\u09A1' },
-      { to: '/admin/projects', icon: '\u263C', en: 'Projects', bn: '\u09AA\u09CD\u09B0\u0995\u09B2\u09CD\u09AA' },
-      { to: '/admin/donations', icon: '\u2665', en: 'Donations', bn: '\u09A6\u09BE\u09A8' },
-      { to: '/admin/gallery', icon: '\u25A3', en: 'Gallery', bn: '\u0997\u09CD\u09AF\u09BE\u09B2\u09BE\u09B0\u09BF' },
-      { to: '/admin/videos', icon: '\u25B6', en: 'Videos', bn: '\u09AD\u09BF\u09A1\u09BF\u0993' },
-      { to: '/admin/cms-pages', icon: '\u2630', en: 'CMS Pages', bn: '\u09B8\u09BF\u098F\u09AE\u098F\u09B8 \u09AA\u09C3\u09B7\u09CD\u09A0\u09BE' },
+      { to: '/admin/dashboard', icon: '\u2302', key: 'dashboard' },
+      { to: '/admin/projects', icon: '\u263C', key: 'projects' },
+      { to: '/admin/donations', icon: '\u2665', key: 'donations' },
+      { to: '/admin/gallery', icon: '\u25A3', key: 'gallery' },
+      { to: '/admin/videos', icon: '\u25B6', key: 'videos' },
+      { to: '/admin/cms-pages', icon: '\u2630', key: 'cms_pages' },
     ],
   },
   {
     label: 'Administration', labelBn: '\u09AA\u09B0\u09BF\u099A\u09BE\u09B2\u09A8\u09BE',
     items: [
-      { to: '/admin/users', icon: '\u263A', en: 'Users', bn: '\u09AC\u09CD\u09AF\u09AC\u09B9\u09BE\u09B0\u0995\u09BE\u09B0\u09C0' },
-      { to: '/admin/roles', icon: '\u2699', en: 'Roles', bn: '\u09AD\u09C2\u09AE\u09BF\u0995\u09BE' },
+      { to: '/admin/users', icon: '\u263A', key: 'users' },
+      { to: '/admin/roles', icon: '\u2699', key: 'roles' },
+      { to: '/admin/settings', icon: '\u2699\uFE0F', key: 'settings' },
+      { to: '/admin/log-viewer', icon: '\u2630', key: 'log_viewer' },
     ],
   },
 ]

@@ -8,6 +8,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\CmsPageController;
 use App\Http\Controllers\SSLCommerzController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\Admin;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -35,6 +36,9 @@ Route::prefix('sslcommerz')->withoutMiddleware([\Illuminate\Foundation\Http\Midd
     Route::post('/ipn', [SSLCommerzController::class, 'ipn']);
 });
 
+Route::post('/stripe/redirect', [StripeController::class, 'redirect'])->middleware('auth:sanctum');
+Route::post('/stripe/webhook', [StripeController::class, 'webhook'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
 Route::prefix('admin')->group(function () {
     Route::post('/login', [Admin\AuthController::class, 'login']);
 
@@ -43,13 +47,16 @@ Route::prefix('admin')->group(function () {
 
         Route::apiResource('projects', Admin\ProjectController::class);
         Route::get('donations', [Admin\DonationController::class, 'index']);
+        Route::get('donations/export/csv', [Admin\DonationController::class, 'exportCsv']);
         Route::get('donations/{id}', [Admin\DonationController::class, 'show']);
 
+        Route::get('gallery/{id}', [Admin\GalleryController::class, 'show']);
         Route::get('gallery', [Admin\GalleryController::class, 'index']);
         Route::post('gallery', [Admin\GalleryController::class, 'store']);
         Route::put('gallery/{id}', [Admin\GalleryController::class, 'update']);
         Route::delete('gallery/{id}', [Admin\GalleryController::class, 'destroy']);
 
+        Route::get('videos/{id}', [Admin\VideoController::class, 'show']);
         Route::get('videos', [Admin\VideoController::class, 'index']);
         Route::post('videos', [Admin\VideoController::class, 'store']);
         Route::put('videos/{id}', [Admin\VideoController::class, 'update']);
@@ -73,5 +80,11 @@ Route::prefix('admin')->group(function () {
         Route::get('roles/{role}', [Admin\RoleController::class, 'show']);
         Route::put('roles/{role}', [Admin\RoleController::class, 'update']);
         Route::delete('roles/{role}', [Admin\RoleController::class, 'destroy']);
+
+        Route::get('settings', [Admin\SettingsController::class, 'index']);
+        Route::put('settings', [Admin\SettingsController::class, 'update']);
+
+        Route::get('logs', [Admin\LogViewerController::class, 'index']);
+        Route::delete('logs', [Admin\LogViewerController::class, 'clear']);
     });
 });

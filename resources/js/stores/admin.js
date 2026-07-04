@@ -43,6 +43,10 @@ export const useAdminStore = defineStore('admin', {
       const { data } = await axios.get('/api/admin/dashboard')
       return data
     },
+    async fetchProject(id) {
+      const { data } = await axios.get(`/api/admin/projects/${id}`)
+      return data
+    },
     async fetchProjects(params = {}) {
       const { data } = await axios.get('/api/admin/projects', { params })
       return data
@@ -62,6 +66,10 @@ export const useAdminStore = defineStore('admin', {
       const { data } = await axios.get('/api/admin/donations', { params })
       return data
     },
+    async fetchGalleryImage(id) {
+      const { data } = await axios.get(`/api/admin/gallery/${id}`)
+      return data
+    },
     async fetchGallery(params = {}) {
       const { data } = await axios.get('/api/admin/gallery', { params })
       return data
@@ -76,6 +84,10 @@ export const useAdminStore = defineStore('admin', {
     },
     async deleteGalleryImage(id) {
       await axios.delete(`/api/admin/gallery/${id}`)
+    },
+    async fetchVideo(id) {
+      const { data } = await axios.get(`/api/admin/videos/${id}`)
+      return data
     },
     async fetchVideos(params = {}) {
       const { data } = await axios.get('/api/admin/videos', { params })
@@ -92,6 +104,10 @@ export const useAdminStore = defineStore('admin', {
     async deleteVideo(id) {
       await axios.delete(`/api/admin/videos/${id}`)
     },
+    async fetchCmsPage(id) {
+      const { data } = await axios.get(`/api/admin/cms-pages/${id}`)
+      return data
+    },
     async fetchCmsPages(params = {}) {
       const { data } = await axios.get('/api/admin/cms-pages', { params })
       return data
@@ -107,6 +123,10 @@ export const useAdminStore = defineStore('admin', {
     async deleteCmsPage(id) {
       await axios.delete(`/api/admin/cms-pages/${id}`)
     },
+    async fetchUser(id) {
+      const { data } = await axios.get(`/api/admin/users/${id}`)
+      return data
+    },
     async fetchUsers(params = {}) {
       const { data } = await axios.get('/api/admin/users', { params })
       return data
@@ -121,6 +141,10 @@ export const useAdminStore = defineStore('admin', {
     },
     async deleteUser(id) {
       await axios.delete(`/api/admin/users/${id}`)
+    },
+    async fetchRole(id) {
+      const { data } = await axios.get(`/api/admin/roles/${id}`)
+      return data
     },
     async fetchRoles(params = {}) {
       const { data } = await axios.get('/api/admin/roles', { params })
@@ -140,6 +164,22 @@ export const useAdminStore = defineStore('admin', {
     },
     async deleteRole(id) {
       await axios.delete(`/api/admin/roles/${id}`)
+    },
+    async fetchSettings() {
+      const { data } = await axios.get('/api/admin/settings')
+      return data
+    },
+    async updateSettings(group, settings) {
+      const { data } = await axios.put('/api/admin/settings', { group, settings })
+      return data
+    },
+    async fetchLogs() {
+      const { data } = await axios.get('/api/admin/logs')
+      return data
+    },
+    async clearLogs() {
+      const { data } = await axios.delete('/api/admin/logs')
+      return data
     },
     logout() {
       this.clearAuth()

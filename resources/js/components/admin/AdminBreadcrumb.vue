@@ -1,7 +1,7 @@
 <template>
   <nav class="flex items-center gap-1.5 text-xs mb-4" :style="{ color: 'var(--ink-soft)' }">
     <RouterLink to="/admin/dashboard" class="hover:opacity-80 transition-opacity" :style="{ color: 'var(--primary)' }">
-      {{ lang.t('Dashboard', 'ড্যাশবোর্ড') }}
+      {{ $t('dashboard') }}
     </RouterLink>
     <template v-for="(item, i) in items" :key="i">
       <span class="mx-1">/</span>
@@ -11,10 +11,10 @@
         class="hover:opacity-80 transition-opacity"
         :style="{ color: 'var(--primary)' }"
       >
-        {{ lang.t(item.label, item.labelBn) }}
+        {{ lang.t(item.label) }}
       </RouterLink>
       <span v-else class="font-medium" :style="{ color: 'var(--ink)' }">
-        {{ lang.t(item.label, item.labelBn) }}
+        {{ lang.t(item.label) }}
       </span>
     </template>
   </nav>

@@ -50,4 +50,60 @@ class DonationController extends Controller
         $donation = Donation::with(['user', 'project'])->findOrFail($id);
         return response()->json($donation);
     }
+
+    public function exportCsv(Request $request)
+    {
+        $query = Donation::with('project');
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->project_id) {
+            $query->where('project_id', $request->project_id);
+        }
+
+        if ($request->date_from) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->date_to) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $donations = $query->orderBy('created_at', 'desc')->get();
+
+        $filename = 'donations-' . now()->format('YmdHis') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ];
+
+        $columns = ['ID', 'Donor Name', 'Donor Email', 'Project', 'Amount', 'Currency', 'Transaction ID', 'Bank Transaction ID', 'Card Type', 'Status', 'Date'];
+
+        $callback = function () use ($donations, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($donations as $d) {
+                fputcsv($file, [
+                    $d->id,
+                    $d->donor_name,
+                    $d->donor_email,
+                    $d->project?->title ?? 'N/A',
+                    $d->amount,
+                    $d->currency ?? 'BDT',
+                    $d->transaction_id,
+                    $d->bank_tran_id ?? '',
+                    $d->card_type ?? '',
+                    $d->status,
+                    $d->created_at->format('Y-m-d H:i:s'),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

@@ -1,23 +1,42 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export const useLangStore = defineStore('lang', () => {
-  const locale = ref(localStorage.getItem('locale') || 'en')
+  const i18n = useI18n()
+
+  const locale = computed({
+    get: () => i18n.locale.value,
+    set: (l) => setLocale(l),
+  })
 
   function setLocale(l) {
-    locale.value = l
+    i18n.locale.value = l
     localStorage.setItem('locale', l)
     document.documentElement.lang = l
   }
 
   function t(en, bn) {
-    return locale.value === 'bn' ? bn : en
+    if (!bn) return i18n.t(en)
+    return i18n.locale.value === 'bn' ? bn : en
+  }
+
+  function f(obj, attr) {
+    if (!obj) return ''
+    const bnKey = attr + '_bn'
+    return i18n.locale.value === 'bn' && obj[bnKey] ? obj[bnKey] : obj[attr]
+  }
+
+  function localeFromRoute(routeLocale) {
+    if (routeLocale && ['en', 'bn'].includes(routeLocale)) {
+      setLocale(routeLocale)
+    }
   }
 
   if (typeof document !== 'undefined') {
-    document.documentElement.lang = locale.value
-    watch(locale, (l) => { document.documentElement.lang = l })
+    document.documentElement.lang = i18n.locale.value
+    watch(() => i18n.locale.value, (l) => { document.documentElement.lang = l })
   }
 
-  return { locale, setLocale, t }
+  return { locale, setLocale, t, f, localeFromRoute }
 })

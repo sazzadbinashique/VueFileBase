@@ -3,20 +3,20 @@
     <div class="max-w-7xl mx-auto px-5 md:px-8 py-16">
       <!-- Breadcrumb -->
       <div class="text-sm mb-8" :style="{ color: 'var(--ink-soft)' }">
-        <RouterLink to="/" class="hover:opacity-80" :style="{ color: 'var(--primary)' }">{{ lang.t('Home', 'হোম') }}</RouterLink>
+        <RouterLink to="/" class="hover:opacity-80" :style="{ color: 'var(--primary)' }">{{ $t('home') }}</RouterLink>
         <span class="mx-2">/</span>
-        <span>{{ lang.t('About', 'পরিচিতি') }}</span>
+        <span>{{ $t('about') }}</span>
       </div>
 
       <div class="grid md:grid-cols-2 gap-12 items-center mb-16 fb-reveal" v-reveal>
         <div>
-          <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--accent2)' }">{{ lang.t('Who we are', 'আমরা কারা') }}</p>
-          <h1 class="font-display text-4xl font-semibold mb-6">{{ lang.t('About Future Bridge Foundation', 'ফিউচার ব্রিজ ফাউন্ডেশন সম্পর্কে') }}</h1>
+          <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--accent2)' }">{{ $t('who_we_are') }}</p>
+          <h1 class="font-display text-4xl font-semibold mb-6">{{ $t('about_fbf') }}</h1>
           <p class="leading-relaxed mb-4" :style="{ color: 'var(--ink-soft)' }">
-            {{ lang.t('We are a Bangladesh-based non-profit working where the need is greatest — flood-prone char lands, low-income urban slums, and villages far from the nearest clinic or school.', 'আমরা বাংলাদেশ-ভিত্তিক একটি অলাভজনক সংস্থা, যারা কাজ করি সেখানেই যেখানে প্রয়োজন সবচেয়ে বেশি — বন্যাপ্রবণ চরাঞ্চল, নিম্ন-আয়ের শহুরে বস্তি, আর নিকটতম ক্লিনিক বা স্কুল থেকে দূরের গ্রামগুলোতে।') }}
+            {{ $t('about_description_1') }}
           </p>
           <p class="leading-relaxed" :style="{ color: 'var(--ink-soft)' }">
-            {{ lang.t('Everything we do is run by local staff and volunteers who live in the communities they serve.', 'আমাদের সব কার্যক্রম পরিচালনা করেন স্থানীয় কর্মী ও স্বেচ্ছাসেবকরা, যারা নিজেরাই সেই কমিউনিটিতে বাস করেন।') }}
+            {{ $t('about_description_1') }}
           </p>
         </div>
         <div class="relative">
@@ -24,26 +24,22 @@
         </div>
       </div>
 
-      <div class="fb-divider fb-divider--accent2"></div>
-
       <!-- Mission section -->
       <div class="grid md:grid-cols-3 gap-8 py-16">
         <div v-for="item in mission" :key="item.key" class="fb-reveal text-center p-6 rounded-2xl" v-reveal :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" :style="{ background: item.bg }">
             <component :is="item.icon" :style="{ color: item.color }" class="w-6 h-6" />
           </div>
-          <h3 class="font-display text-xl font-semibold mb-2">{{ lang.t(item.titleEn, item.titleBn) }}</h3>
-          <p class="text-sm leading-relaxed" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(item.descEn, item.descBn) }}</p>
+          <h3 class="font-display text-xl font-semibold mb-2">{{ lang.t(item.titleEn) }}</h3>
+          <p class="text-sm leading-relaxed" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(item.descEn) }}</p>
         </div>
       </div>
 
-      <div class="fb-divider flip"></div>
-
       <!-- History -->
       <section class="py-16 text-center fb-reveal" v-reveal>
-        <h2 class="font-display text-3xl font-semibold mb-4">{{ lang.t('Our Story', 'আমাদের গল্প') }}</h2>
+        <h2 class="font-display text-3xl font-semibold mb-4">{{ $t('our_story') }}</h2>
         <p class="max-w-2xl mx-auto leading-relaxed" :style="{ color: 'var(--ink-soft)' }">
-          {{ lang.t('From a single food drive in 2016, we have grown into four ongoing programs across food security, education, healthcare, and clean water. Today we serve thousands of families across Bangladesh — always transparent about where every taka goes.', '২০১৬ সালে একটি মাত্র খাদ্য কর্মসূচি দিয়ে শুরু করে আজ আমরা খাদ্য নিরাপত্তা, শিক্ষা, স্বাস্থ্যসেবা আর নিরাপদ পানি — এই চারটি চলমান কর্মসূচিতে পরিণত হয়েছি। আজ আমরা বাংলাদেশজুড়ে হাজারো পরিবারকে সেবা দিচ্ছি — প্রতিটি টাকা কোথায় যায় তা নিয়ে সবসময় স্বচ্ছ থেকে।') }}
+          {{ $t('our_story_full') }}
         </p>
       </section>
     </div>
@@ -51,6 +47,7 @@
 </template>
 
 <script setup>
+import Layout from '@/layouts/Layout.vue'
 import { useLangStore } from '@/stores/lang'
 
 const lang = useLangStore()

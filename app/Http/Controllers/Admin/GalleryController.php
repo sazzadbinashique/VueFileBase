@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {
+    public function show($id)
+    {
+        return response()->json(GalleryImage::with('project')->findOrFail($id));
+    }
+
     public function index(Request $request)
     {
         $query = GalleryImage::with('project');

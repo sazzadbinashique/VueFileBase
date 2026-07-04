@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Donation;
 use App\Models\Project;
 use App\Services\SSLCommerzService;
+use App\Services\StripeService;
 use Illuminate\Http\Request;
 
 class DonationController extends Controller
 {
     public function __construct(
-        protected SSLCommerzService $sslcommerz
-    ) {
-        $this->middleware('auth:sanctum');
-    }
+        protected SSLCommerzService $sslcommerz,
+        protected StripeService $stripe
+    ) {}
 
     public function index(Request $request)
     {
@@ -31,16 +31,18 @@ class DonationController extends Controller
             'project_id' => 'required|exists:projects,id',
             'amount' => 'required|numeric|min:10',
             'message' => 'nullable|string|max:1000',
+            'currency' => 'nullable|in:BDT,USD',
         ]);
 
         $user = $request->user();
+        $currency = $request->currency ?? 'BDT';
         $transactionId = 'TXN-' . strtoupper(uniqid());
 
         $donation = Donation::create([
             'user_id' => $user->id,
             'project_id' => $request->project_id,
-            'amount' => $request->amount,
-            'currency' => 'BDT',
+            'amount' => $currency === 'USD' ? $request->amount : $request->amount,
+            'currency' => $currency,
             'transaction_id' => $transactionId,
             'status' => 'pending',
             'donor_name' => $user->name,
@@ -48,14 +50,23 @@ class DonationController extends Controller
             'message' => $request->message,
         ]);
 
-        $project = Project::find($request->project_id);
+        if ($currency === 'USD') {
+            return $this->initiateStripe($donation);
+        }
+
+        return $this->initiateSSLCommerz($donation, $request);
+    }
+
+    protected function initiateSSLCommerz(Donation $donation, Request $request)
+    {
+        $project = Project::find($donation->project_id);
 
         $response = $this->sslcommerz->initiate([
-            'amount' => $request->amount,
-            'transaction_id' => $transactionId,
-            'cus_name' => $user->name,
-            'cus_email' => $user->email,
-            'cus_phone' => $user->phone ?? '',
+            'amount' => $donation->amount,
+            'transaction_id' => $donation->transaction_id,
+            'cus_name' => $donation->donor_name,
+            'cus_email' => $donation->donor_email,
+            'cus_phone' => $request->user()->phone ?? '',
             'product_name' => $project->title ?? 'Donation',
             'product_category' => 'Donation',
         ]);
@@ -70,7 +81,26 @@ class DonationController extends Controller
 
         return response()->json([
             'redirect_url' => $response['GatewayPageURL'] ?? $response['redirectGatewayURL'] ?? '',
-            'transaction_id' => $transactionId,
+            'transaction_id' => $donation->transaction_id,
+        ]);
+    }
+
+    protected function initiateStripe(Donation $donation)
+    {
+        $frontendUrl = config('app.frontend_url') ?? config('app.url');
+        $session = $this->stripe->createCheckoutSession(
+            $donation,
+            $frontendUrl . '/donations/success?tran_id=' . $donation->transaction_id,
+            $frontendUrl . '/donations/cancel'
+        );
+
+        $donation->update([
+            'stripe_session_id' => $session->id,
+        ]);
+
+        return response()->json([
+            'redirect_url' => $session->url,
+            'transaction_id' => $donation->transaction_id,
         ]);
     }
 

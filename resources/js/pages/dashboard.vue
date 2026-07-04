@@ -1,38 +1,38 @@
 <template>
   <Layout>
     <div class="max-w-6xl mx-auto p-6">
-      <h1 class="text-3xl font-bold mb-6" :style="{ color: 'var(--ink)' }">{{ lang.t('My Dashboard', 'আমার ড্যাশবোর্ড') }}</h1>
+      <h1 class="text-3xl font-bold mb-6" :style="{ color: 'var(--ink)' }">{{ $t('my_dashboard') }}</h1>
 
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="rounded-lg p-5 text-center" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <p class="text-3xl font-bold" :style="{ color: 'var(--primary)' }">${{ Number(stats.total_donated).toLocaleString() }}</p>
-          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('Total Donated', 'মোট দান') }}</p>
+          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ $t('total_donated') }}</p>
         </div>
         <div class="rounded-lg p-5 text-center" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <p class="text-3xl font-bold" :style="{ color: 'var(--accent2)' }">{{ stats.donation_count }}</p>
-          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('Donations', 'দান') }}</p>
+          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ $t('donations') }}</p>
         </div>
         <div class="rounded-lg p-5 text-center" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <p class="text-3xl font-bold" :style="{ color: 'var(--accent)' }">{{ Object.keys(yearlyStats).length }}</p>
-          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('Years Active', 'সক্রিয় বছর') }}</p>
+          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ $t('years_active') }}</p>
         </div>
         <div class="rounded-lg p-5 text-center" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <p class="text-3xl font-bold" style="color: var(--primary)">{{ uniqueProjects }}</p>
-          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('Projects', 'প্রকল্প') }}</p>
+          <p class="text-xs mt-1 font-mono uppercase tracking-wide" :style="{ color: 'var(--ink-soft)' }">{{ $t('projects') }}</p>
         </div>
       </div>
 
       <div class="rounded-lg p-6 mb-8" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
-        <h2 class="text-lg font-semibold mb-4">{{ lang.t('Yearly Donation Summary', 'বার্ষিক দানের সারসংক্ষেপ') }}</h2>
+        <h2 class="text-lg font-semibold mb-4">{{ $t('yearly_summary') }}</h2>
         <div v-if="yearKeys.length">
           <BarChart :labels="yearKeys" :datasets="yearDatasets" />
           <div class="mt-4 overflow-x-auto">
             <table class="w-full text-xs">
               <thead><tr class="border-b" :style="{ borderColor: 'var(--border)' }">
-                <th class="py-2 px-3 text-left">{{ lang.t('Year', 'বছর') }}</th>
-                <th class="py-2 px-3 text-left">{{ lang.t('Project', 'প্রকল্প') }}</th>
-                <th class="py-2 px-3 text-right">{{ lang.t('Count', 'সংখ্যা') }}</th>
-                <th class="py-2 px-3 text-right">{{ lang.t('Total', 'মোট') }}</th>
+                <th class="py-2 px-3 text-left">{{ $t('year') }}</th>
+                <th class="py-2 px-3 text-left">{{ $t('project') }}</th>
+                <th class="py-2 px-3 text-right">{{ $t('count') }}</th>
+                <th class="py-2 px-3 text-right">{{ $t('total') }}</th>
               </tr></thead>
               <tbody>
                 <template v-for="(items, year) in yearlyStats" :key="year">
@@ -47,11 +47,11 @@
             </table>
           </div>
         </div>
-        <p v-else class="text-sm" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('No donation data yet.', 'এখনো কোনো দানের তথ্য নেই।') }}</p>
+        <p v-else class="text-sm" :style="{ color: 'var(--ink-soft)' }">{{ $t('no_donation_data') }}</p>
       </div>
 
       <div class="rounded-lg p-6 mb-8" :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
-        <h2 class="text-lg font-semibold mb-4">{{ lang.t('Donation History', 'দানের ইতিহাস') }}</h2>
+        <h2 class="text-lg font-semibold mb-4">{{ $t('donation_history') }}</h2>
         <div v-if="loadingHistory" class="text-center py-8">
           <span class="inline-block w-6 h-6 border-2 rounded-full animate-spin" :style="{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }"></span>
         </div>
@@ -59,12 +59,12 @@
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead><tr class="border-b text-left" :style="{ borderColor: 'var(--border)' }">
-                <th class="py-3 px-3">{{ lang.t('Date', 'তারিখ') }}</th>
-                <th class="py-3 px-3">{{ lang.t('Project', 'প্রকল্প') }}</th>
-                <th class="py-3 px-3 text-right">{{ lang.t('Amount', 'পরিমাণ') }}</th>
-                <th class="py-3 px-3">{{ lang.t('Transaction', 'লেনদেন') }}</th>
-                <th class="py-3 px-3">{{ lang.t('Status', 'স্ট্যাটাস') }}</th>
-                <th class="py-3 px-3">{{ lang.t('Payment', 'পেমেন্ট') }}</th>
+                <th class="py-3 px-3">{{ $t('date') }}</th>
+                <th class="py-3 px-3">{{ $t('project') }}</th>
+                <th class="py-3 px-3 text-right">{{ $t('amount') }}</th>
+                <th class="py-3 px-3">{{ $t('transaction') }}</th>
+                <th class="py-3 px-3">{{ $t('status') }}</th>
+                <th class="py-3 px-3">{{ $t('payment') }}</th>
               </tr></thead>
               <tbody>
                 <tr v-for="d in donations" :key="d.id" class="border-b" :style="{ borderColor: 'var(--border)' }">
@@ -75,7 +75,7 @@
                   <td class="py-3 px-3"><StatusBadge :status="d.status" /></td>
                   <td class="py-3 px-3 text-xs" :style="{ color: 'var(--ink-soft)' }">{{ d.card_type || '-' }}</td>
                 </tr>
-                <tr v-if="!donations.length"><td colspan="6" class="text-center py-8" :style="{ color: 'var(--ink-soft)' }">{{ lang.t('No donations yet.', 'এখনো কোনো দান নেই।') }}</td></tr>
+                <tr v-if="!donations.length"><td colspan="6" class="text-center py-8" :style="{ color: 'var(--ink-soft)' }">{{ $t('no_donations') }}</td></tr>
               </tbody>
             </table>
           </div>

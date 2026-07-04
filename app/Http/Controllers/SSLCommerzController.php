@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Mail\DonationReceipt;
 use App\Services\SSLCommerzService;
 use Illuminate\Http\Request;
 
@@ -35,6 +36,7 @@ class SSLCommerzController extends Controller
                 ]);
 
                 $donation->project?->increment('collected_amount', $donation->amount);
+                DonationReceipt::dispatch($donation);
             }
 
             $frontendUrl = config('app.frontend_url') ?? config('app.url');
@@ -91,6 +93,7 @@ class SSLCommerzController extends Controller
             ]);
 
             $donation->project?->increment('collected_amount', $donation->amount);
+            DonationReceipt::dispatch($donation);
         }
 
         return response('OK', 200);

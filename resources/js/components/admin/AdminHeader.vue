@@ -4,10 +4,10 @@
     :style="{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--ink)' }"
   >
     <div class="flex items-center gap-3">
-      <button @click="$emit('toggle')" class="text-xl hover:opacity-70 md:hidden">
-        ☰
+      <button @click="$emit('toggle')" class="hover:opacity-70 md:hidden p-1.5 rounded" :style="{ color: 'var(--ink-soft)' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <span class="font-display font-semibold text-sm md:hidden">{{ lang.t('FBF Admin', 'এফবিএফ অ্যাডমিন') }}</span>
+      <span class="font-display font-semibold text-sm md:hidden">{{ $t('fbf_admin') }}</span>
     </div>
 
     <div class="flex items-center gap-2">
@@ -54,7 +54,7 @@
               @click="dropdownOpen = false"
             >
               <span>👤</span>
-              <span>{{ lang.t('Profile', 'প্রোফাইল') }}</span>
+              <span>{{ $t('profile') }}</span>
             </RouterLink>
             <button
               @click="handleLogout"
@@ -62,7 +62,7 @@
               :style="{ color: 'var(--accent2)' }"
             >
               <span>🚪</span>
-              <span>{{ lang.t('Logout', 'লগআউট') }}</span>
+              <span>{{ $t('logout') }}</span>
             </button>
           </div>
         </div>

@@ -1,10 +1,10 @@
 <template>
   <Layout>
     <section class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
-      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--accent2)' }">{{ lang.t('Moments from the field', 'মাঠের মুহূর্তগুলো') }}</p>
-      <h1 class="font-display text-4xl font-semibold mb-4">{{ lang.t('Gallery', 'গ্যালারি') }}</h1>
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--accent2)' }">{{ $t('moments_from_field') }}</p>
+      <h1 class="font-display text-4xl font-semibold mb-4">{{ $t('gallery') }}</h1>
       <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
-        {{ lang.t('Click any photo for a closer look. Filter by project to see specific work.', 'বড় করে দেখতে যেকোনো ছবিতে ক্লিক করুন। নির্দিষ্ট কাজ দেখতে প্রকল্প অনুযায়ী ফিল্টার করুন।') }}
+        {{ $t('gallery_desc') }}
       </p>
     </section>
 
@@ -14,11 +14,9 @@
         :style="activeFilter === chip.id
           ? { background: 'var(--accent2)', color: 'var(--accent2-ink)', borderColor: 'var(--accent2)' }
           : { borderColor: 'var(--border)', color: 'var(--ink)' }">
-        {{ lang.t(chip.en, chip.bn) }}
+        {{ lang.t(chip.en) }}
       </button>
     </div>
-
-    <div class="fb-divider"></div>
 
     <section class="max-w-7xl mx-auto px-5 md:px-8 py-12">
       <div v-if="loading" class="text-center py-12">
@@ -28,15 +26,15 @@
         <button v-for="(img, i) in filteredImages" :key="img.id" type="button" @click="openLightbox(i)"
           class="fb-card fb-reveal group relative block w-full rounded-xl overflow-hidden" v-reveal
           :style="{ border: '1px solid var(--border)' }">
-          <img :src="img.image_path" :alt="lang.t(img.title, img.title_bn)"
+          <img :src="img.image_path" :alt="lang.f(img, 'title')"
             class="w-full h-full object-cover aspect-square group-hover:scale-105 transition-transform duration-500">
           <span class="absolute inset-x-0 bottom-0 p-2 text-xs bg-gradient-to-t from-black/70 to-transparent text-white text-left">
-            {{ lang.t(img.title, img.title_bn) }}
+            {{ lang.f(img, 'title') }}
           </span>
         </button>
       </div>
       <div v-if="!filteredImages.length && !loading" class="text-center py-12" :style="{ color: 'var(--ink-soft)' }">
-        {{ lang.t('No images found.', 'কোনো ছবি পাওয়া যায়নি।') }}
+        {{ $t('no_images') }}
       </div>
     </section>
   </Layout>

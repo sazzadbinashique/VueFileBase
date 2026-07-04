@@ -8,7 +8,8 @@ use Illuminate\Support\Str;
 class CmsPage extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'content', 'meta_title', 'meta_description', 'status',
+        'title', 'title_bn', 'slug', 'content', 'content_bn',
+        'meta_title', 'meta_description', 'status',
     ];
 
     protected static function booted()

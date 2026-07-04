@@ -1,10 +1,10 @@
 <template>
   <Layout>
     <section class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
-      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--primary)' }">{{ lang.t('See it in motion', 'চলমান চিত্রে দেখুন') }}</p>
-      <h1 class="font-display text-4xl font-semibold mb-4">{{ lang.t('Our Videos', 'আমাদের ভিডিও') }}</h1>
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--primary)' }">{{ $t('see_in_motion') }}</p>
+      <h1 class="font-display text-4xl font-semibold mb-4">{{ $t('our_videos') }}</h1>
       <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
-        {{ lang.t('Field visits, distribution days, and stories from the communities we work with.', 'মাঠ পরিদর্শন, বিতরণের দিন, আর আমাদের কাজের কমিউনিটিগুলোর গল্প।') }}
+        {{ $t('videos_desc') }}
       </p>
     </section>
 
@@ -14,11 +14,9 @@
         :style="activeFilter === chip.id
           ? { background: 'var(--primary)', color: 'var(--primary-ink)', borderColor: 'var(--primary)' }
           : { borderColor: 'var(--border)', color: 'var(--ink)' }">
-        {{ lang.t(chip.en, chip.bn) }}
+        {{ lang.t(chip.en) }}
       </button>
     </div>
-
-    <div class="fb-divider fb-divider--accent"></div>
 
     <section class="max-w-7xl mx-auto px-5 md:px-8 py-12">
       <div v-if="loading" class="text-center py-12">
@@ -29,17 +27,17 @@
           class="fb-card fb-reveal rounded-2xl overflow-hidden" v-reveal
           :style="{ background: 'var(--surface)', border: '1px solid var(--border)' }">
           <div class="aspect-video">
-            <iframe class="w-full h-full" :src="v.url" :title="lang.t(v.title, v.title_bn)" frameborder="0"
+            <iframe class="w-full h-full" :src="v.url" :title="lang.f(v, 'title')" frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
           </div>
           <div class="p-4">
-            <h3 class="font-display text-lg font-semibold mb-1">{{ lang.t(v.title, v.title_bn) }}</h3>
-            <p class="text-sm" :style="{ color: 'var(--ink-soft)' }">{{ lang.t(v.description, v.description_bn) }}</p>
+            <h3 class="font-display text-lg font-semibold mb-1">{{ lang.f(v, 'title') }}</h3>
+            <p class="text-sm" :style="{ color: 'var(--ink-soft)' }">{{ lang.f(v, 'description') }}</p>
           </div>
         </div>
       </div>
       <div v-if="!filteredVideos.length && !loading" class="text-center py-12" :style="{ color: 'var(--ink-soft)' }">
-        {{ lang.t('No videos found.', 'কোনো ভিডিও পাওয়া যায়নি।') }}
+        {{ $t('no_videos') }}
       </div>
     </section>
   </Layout>
