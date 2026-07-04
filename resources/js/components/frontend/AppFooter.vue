@@ -19,6 +19,7 @@
           <li><RouterLink to="/about" class="hover:opacity-80 transition">{{ $t('about_us') }}</RouterLink></li>
           <li><RouterLink to="/videos" class="hover:opacity-80 transition">{{ $t('videos') }}</RouterLink></li>
           <li><RouterLink to="/gallery" class="hover:opacity-80 transition">{{ $t('gallery') }}</RouterLink></li>
+          <li><RouterLink to="/contact" class="hover:opacity-80 transition">{{ $t('contact') }}</RouterLink></li>
         </ul>
       </div>
       <div>

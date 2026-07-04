@@ -11,9 +11,17 @@
             <div><label class="block text-sm font-medium mb-1">{{ $t('status') }}</label><select v-model="form.status" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }"><option value="draft">Draft</option><option value="published">Published</option></select></div>
             <div><label class="block text-sm font-medium mb-1">Meta Title</label><input v-model="form.meta_title" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" /></div>
             <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Meta Description</label><input v-model="form.meta_description" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" /></div>
+            <div><label class="block text-sm font-medium mb-1">Banner Eyebrow (EN)</label><input v-model="form.banner_eyebrow" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" /></div>
+            <div><label class="block text-sm font-medium mb-1">Banner Eyebrow (BN)</label><input v-model="form.banner_eyebrow_bn" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" /></div>
+            <div><label class="block text-sm font-medium mb-1">Banner Title (EN)</label><input v-model="form.banner_title" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" /></div>
+            <div><label class="block text-sm font-medium mb-1">Banner Title (BN)</label><input v-model="form.banner_title_bn" class="w-full border rounded px-3 py-2 outline-none" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" /></div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Banner Description (EN)</label><textarea v-model="form.banner_description" rows="3" class="w-full border rounded px-3 py-2 outline-none text-sm" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }"></textarea></div>
+            <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Banner Description (BN)</label><textarea v-model="form.banner_description_bn" rows="3" class="w-full border rounded px-3 py-2 outline-none text-sm" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }"></textarea></div>
           </div>
           <div><label class="block text-sm font-medium mb-1">{{ $t('content_en') }}</label><textarea v-model="form.content" rows="10" class="w-full border rounded px-3 py-2 outline-none font-mono text-sm" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" required></textarea></div>
           <div><label class="block text-sm font-medium mb-1">{{ $t('content_bn') }}</label><textarea v-model="form.content_bn" rows="10" class="w-full border rounded px-3 py-2 outline-none font-mono text-sm" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }"></textarea></div>
+          <div><label class="block text-sm font-medium mb-1">Layout JSON (EN)</label><textarea v-model="form.layout_json" rows="8" class="w-full border rounded px-3 py-2 outline-none font-mono text-xs" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" placeholder='{"details":[{"label":"Email","value":"hello@example.com"}],"form":{"title":"Send us a message"}}'></textarea></div>
+          <div><label class="block text-sm font-medium mb-1">Layout JSON (BN)</label><textarea v-model="form.layout_json_bn" rows="8" class="w-full border rounded px-3 py-2 outline-none font-mono text-xs" :style="{ borderColor: 'var(--border)', background: 'var(--bg)', color: 'var(--ink)' }" placeholder='{"details":[{"label":"ইমেইল","value":"hello@example.com"}],"form":{"title":"আমাদের বার্তা পাঠান"}}'></textarea></div>
           <div class="flex gap-2">
             <button type="submit" class="px-6 py-2 rounded font-semibold hover:opacity-90" :style="{ background: 'var(--primary)', color: 'var(--primary-ink)' }">{{ $t('save') }}</button>
             <RouterLink to="/admin/cms-pages" class="px-6 py-2 rounded hover:opacity-90 inline-block" :style="{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }">{{ $t('cancel') }}</RouterLink>
@@ -34,7 +42,23 @@ import AdminBreadcrumb from '@/components/admin/AdminBreadcrumb.vue'
 const breadcrumbs = [{ label: 'CMS Pages', labelBn: 'সিএমএস পৃষ্ঠা' }, { label: 'New', labelBn: 'নতুন' }]
 const router = useRouter()
 const admin = useAdminStore()
-const form = ref({ title: '', title_bn: '', content: '', content_bn: '', meta_title: '', meta_description: '', status: 'draft' })
+const form = ref({
+  title: '',
+  title_bn: '',
+  content: '',
+  content_bn: '',
+  meta_title: '',
+  meta_description: '',
+  banner_eyebrow: '',
+  banner_eyebrow_bn: '',
+  banner_title: '',
+  banner_title_bn: '',
+  banner_description: '',
+  banner_description_bn: '',
+  layout_json: '',
+  layout_json_bn: '',
+  status: 'draft'
+})
 
 async function savePage() {
   try {

@@ -1,12 +1,11 @@
 <template>
   <Layout>
-    <section class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
-      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--accent2)' }">{{ $t('moments_from_field') }}</p>
-      <h1 class="font-display text-4xl font-semibold mb-4">{{ $t('gallery') }}</h1>
-      <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
-        {{ $t('gallery_desc') }}
-      </p>
-    </section>
+    <PageBanner
+      accent="accent2"
+      :eyebrow="bannerEyebrow"
+      :title="bannerTitle"
+      :description="bannerDescription"
+    />
 
     <div class="max-w-7xl mx-auto px-5 md:px-8 pb-8 flex flex-wrap justify-center gap-2">
       <button v-for="(chip, i) in filters" :key="chip.id" type="button" @click="setFilter(chip.id)"
@@ -46,11 +45,14 @@ import axios from 'axios'
 import { useLangStore } from '@/stores/lang'
 import { useLightbox } from '@/composables/useLightbox'
 import Layout from '@/layouts/Layout.vue'
+import PageBanner from '@/components/frontend/PageBanner.vue'
+import { fetchCmsPage, cmsText } from '@/composables/useCmsPage'
 
 const lang = useLangStore()
 const lb = useLightbox()
 const images = ref([])
 const projects = ref([])
+const cmsPage = ref(null)
 const loading = ref(true)
 const activeFilter = ref('all')
 
@@ -85,12 +87,26 @@ function openLightbox(index) {
 
 onMounted(async () => {
   try {
-    const [imgRes, projRes] = await Promise.all([
+    const [imgRes, projRes, pageRes] = await Promise.all([
       axios.get('/api/gallery', { params: { per_page: 100 } }),
-      axios.get('/api/projects', { params: { status: 'active', per_page: 100 } })
+      axios.get('/api/projects', { params: { status: 'active', per_page: 100 } }),
+      fetchCmsPage('gallery'),
     ])
     images.value = imgRes.data.data || []
     projects.value = projRes.data.data || []
+    cmsPage.value = pageRes
   } finally { loading.value = false }
 })
+
+const bannerEyebrow = computed(() =>
+  cmsText(cmsPage.value, lang.locale, 'banner_eyebrow', 'banner_eyebrow_bn', lang.t('moments_from_field'))
+)
+
+const bannerTitle = computed(() =>
+  cmsText(cmsPage.value, lang.locale, 'banner_title', 'banner_title_bn', lang.t('gallery'))
+)
+
+const bannerDescription = computed(() =>
+  cmsText(cmsPage.value, lang.locale, 'banner_description', 'banner_description_bn', lang.t('gallery_desc'))
+)
 </script>

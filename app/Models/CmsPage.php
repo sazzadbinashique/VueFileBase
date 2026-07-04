@@ -9,7 +9,12 @@ class CmsPage extends Model
 {
     protected $fillable = [
         'title', 'title_bn', 'slug', 'content', 'content_bn',
-        'meta_title', 'meta_description', 'status',
+        'meta_title', 'meta_description',
+        'banner_eyebrow', 'banner_eyebrow_bn',
+        'banner_title', 'banner_title_bn',
+        'banner_description', 'banner_description_bn',
+        'layout_json', 'layout_json_bn',
+        'status',
     ];
 
     protected static function booted()

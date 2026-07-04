@@ -16,6 +16,7 @@ class CmsPageController extends Controller
         if ($search = $request->search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('title_bn', 'like', "%{$search}%")
                   ->orWhere('slug', 'like', "%{$search}%");
             });
         }
@@ -36,18 +37,38 @@ class CmsPageController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'title_bn' => 'nullable|string|max:255',
             'content' => 'required|string',
+            'content_bn' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'banner_eyebrow' => 'nullable|string|max:255',
+            'banner_eyebrow_bn' => 'nullable|string|max:255',
+            'banner_title' => 'nullable|string|max:255',
+            'banner_title_bn' => 'nullable|string|max:255',
+            'banner_description' => 'nullable|string',
+            'banner_description_bn' => 'nullable|string',
+            'layout_json' => 'nullable|string',
+            'layout_json_bn' => 'nullable|string',
             'status' => 'nullable|string|in:published,draft',
         ]);
 
         $page = CmsPage::create([
             'title' => $request->title,
+            'title_bn' => $request->title_bn,
             'slug' => Str::slug($request->title),
             'content' => $request->content,
+            'content_bn' => $request->content_bn,
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
+            'banner_eyebrow' => $request->banner_eyebrow,
+            'banner_eyebrow_bn' => $request->banner_eyebrow_bn,
+            'banner_title' => $request->banner_title,
+            'banner_title_bn' => $request->banner_title_bn,
+            'banner_description' => $request->banner_description,
+            'banner_description_bn' => $request->banner_description_bn,
+            'layout_json' => $request->layout_json,
+            'layout_json_bn' => $request->layout_json_bn,
             'status' => $request->status ?? 'draft',
         ]);
 
@@ -65,9 +86,19 @@ class CmsPageController extends Controller
 
         $request->validate([
             'title' => 'sometimes|string|max:255',
+            'title_bn' => 'nullable|string|max:255',
             'content' => 'sometimes|string',
+            'content_bn' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'banner_eyebrow' => 'nullable|string|max:255',
+            'banner_eyebrow_bn' => 'nullable|string|max:255',
+            'banner_title' => 'nullable|string|max:255',
+            'banner_title_bn' => 'nullable|string|max:255',
+            'banner_description' => 'nullable|string',
+            'banner_description_bn' => 'nullable|string',
+            'layout_json' => 'nullable|string',
+            'layout_json_bn' => 'nullable|string',
             'status' => 'nullable|string|in:published,draft',
         ]);
 

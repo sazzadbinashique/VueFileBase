@@ -15,7 +15,7 @@
         <li><RouterLink to="/projects" class="fb-nav-link" :class="{ active: $route.path.startsWith('/projects') }">{{ $t('projects') }}</RouterLink></li>
         <li><RouterLink to="/videos" class="fb-nav-link" :class="{ active: $route.path.startsWith('/videos') }">{{ $t('videos') }}</RouterLink></li>
         <li><RouterLink to="/gallery" class="fb-nav-link" :class="{ active: $route.path.startsWith('/gallery') }">{{ $t('gallery') }}</RouterLink></li>
-        <li><a href="#contact" class="fb-nav-link" @click.prevent="scrollToContact">{{ $t('contact') }}</a></li>
+        <li><RouterLink to="/contact" class="fb-nav-link" :class="{ active: $route.path.startsWith('/contact') }">{{ $t('contact') }}</RouterLink></li>
         <li v-if="authStore.isAdmin">
           <RouterLink to="/admin/dashboard" class="fb-nav-link" style="color: var(--accent2)">{{ $t('admin') }}</RouterLink>
         </li>
@@ -62,6 +62,7 @@
       <li><RouterLink to="/projects" class="block px-6 py-3" @click="mobileOpen = false">{{ $t('projects') }}</RouterLink></li>
       <li><RouterLink to="/videos" class="block px-6 py-3" @click="mobileOpen = false">{{ $t('videos') }}</RouterLink></li>
       <li><RouterLink to="/gallery" class="block px-6 py-3" @click="mobileOpen = false">{{ $t('gallery') }}</RouterLink></li>
+      <li><RouterLink to="/contact" class="block px-6 py-3" @click="mobileOpen = false">{{ $t('contact') }}</RouterLink></li>
       <li><RouterLink to="/admin/dashboard" v-if="authStore.isAdmin" class="block px-6 py-3" @click="mobileOpen = false" style="color: var(--accent2)">{{ $t('admin') }}</RouterLink></li>
       <li v-if="!authStore.isLoggedIn"><RouterLink to="/login" class="block px-6 py-3" @click="mobileOpen = false" :style="{ color: 'var(--primary)' }">{{ $t('login') }}</RouterLink></li>
       <li v-if="authStore.isLoggedIn"><RouterLink to="/dashboard" class="block px-6 py-3" @click="mobileOpen = false" :style="{ color: 'var(--primary)' }">{{ authStore.user?.name }}</RouterLink></li>
@@ -89,8 +90,4 @@ async function handleLogout() {
   router.push('/')
 }
 
-function scrollToContact() {
-  const el = document.getElementById('contact')
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
-}
 </script>

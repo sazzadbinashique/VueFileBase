@@ -1,12 +1,11 @@
 <template>
   <Layout>
-    <div class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-4 text-center fb-reveal" v-reveal>
-      <p class="font-mono text-xs uppercase tracking-widest mb-3" :style="{ color: 'var(--primary)' }">{{ $t('where_your_support_goes') }}</p>
-      <h1 class="font-display text-4xl font-semibold mb-4">{{ $t('our_projects') }}</h1>
-      <p class="max-w-xl mx-auto" :style="{ color: 'var(--ink-soft)' }">
-        {{ $t('projects_desc') }}
-      </p>
-    </div>
+    <PageBanner
+      accent="primary"
+      :eyebrow="bannerEyebrow"
+      :title="bannerTitle"
+      :description="bannerDescription"
+    />
 
     <section class="max-w-7xl mx-auto px-5 md:px-8 py-12">
       <div v-if="loading" class="text-center py-12">
@@ -40,13 +39,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useLangStore } from '@/stores/lang'
 import Layout from '@/layouts/Layout.vue'
+import PageBanner from '@/components/frontend/PageBanner.vue'
+import { fetchCmsPage, cmsText } from '@/composables/useCmsPage'
 
 const lang = useLangStore()
 const projects = ref([])
+const cmsPage = ref(null)
 const loading = ref(true)
 
 const vReveal = {
@@ -61,8 +63,24 @@ const vReveal = {
 
 onMounted(async () => {
   try {
-    const { data } = await axios.get('/api/projects', { params: { status: 'active', per_page: 100 } })
-    projects.value = data.data || []
+    const [projRes, pageRes] = await Promise.all([
+      axios.get('/api/projects', { params: { status: 'active', per_page: 100 } }),
+      fetchCmsPage('projects'),
+    ])
+    projects.value = projRes.data.data || []
+    cmsPage.value = pageRes
   } finally { loading.value = false }
 })
+
+const bannerEyebrow = computed(() =>
+  cmsText(cmsPage.value, lang.locale, 'banner_eyebrow', 'banner_eyebrow_bn', lang.t('where_your_support_goes'))
+)
+
+const bannerTitle = computed(() =>
+  cmsText(cmsPage.value, lang.locale, 'banner_title', 'banner_title_bn', lang.t('our_projects'))
+)
+
+const bannerDescription = computed(() =>
+  cmsText(cmsPage.value, lang.locale, 'banner_description', 'banner_description_bn', lang.t('projects_desc'))
+)
 </script>
